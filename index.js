@@ -34,12 +34,27 @@ app.post('/updateUser', (req, res) => {
     const newEmail = req.body.newEmail; // New email
     const newPassword = req.body.newPassword; // New password
 
-    admin.auth().updateUser(uid, {
-        email: newEmail,
-        password: newPassword
-    })
-    .then(() => res.status(200).send('User email and password updated successfully'))
-    .catch(error => res.status(500).send('Error updating user: ' + error.message));
+    // Prepare an update object
+    let update = {};
+
+    // Add email to update object if it's not empty
+    if (newEmail && newEmail.trim() !== '') {
+        update.email = newEmail;
+    }
+
+    // Add password to update object if it's not empty
+    if (newPassword && newPassword.trim() !== '') {
+        update.password = newPassword;
+    }
+
+    // Check if there is anything to update
+    if (Object.keys(update).length === 0) {
+        return res.status(400).send('No valid fields provided for update.');
+    }
+
+    admin.auth().updateUser(uid, update)
+        .then(() => res.status(200).send('User updated successfully'))
+        .catch(error => res.status(500).send('Error updating user: ' + error.message));
 });
 
 
