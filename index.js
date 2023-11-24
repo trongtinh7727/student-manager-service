@@ -29,4 +29,19 @@ app.post('/deleteUser', (req, res) => {
         .catch(error => res.status(500).send('Error deleting user'));
 });
 
+app.post('/updateUser', (req, res) => {
+    const uid = req.body.uid;
+    const newEmail = req.body.newEmail; // New email
+    const newPassword = req.body.newPassword; // New password
+
+    admin.auth().updateUser(uid, {
+        email: newEmail,
+        password: newPassword
+    })
+    .then(() => res.status(200).send('User email and password updated successfully'))
+    .catch(error => res.status(500).send('Error updating user: ' + error.message));
+});
+
+
+
 app.listen(3000, () => console.log('Server is running'));
